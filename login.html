@@ -143,16 +143,16 @@ Don't have an account?
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // 2. Initialize Supabase
+    
     const supabaseUrl = 'https://fyojiyvwfzwaxefgwncj.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5b2ppeXZ3Znp3YXhlZmd3bmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjY4MjgsImV4cCI6MjA5MDU0MjgyOH0.j6zasi2bFDUzvYbmJBGryRna8gAMuN4NBqYZ8WyKGYw';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     const loginBtn = document.getElementById('loginBtn');
 
-    // 3. Login Event Listener
+    
     loginBtn.addEventListener('click', async () => {
-        // These IDs MUST match the 'id' attributes in your HTML
+        
         const emailField = document.getElementById('email');
         const passwordField = document.getElementById('password');
 
@@ -186,7 +186,7 @@ Don't have an account?
         }
     });
 
-    // 4. Password Toggle
+    
     function togglePassword() {
         const pass = document.getElementById("password");
         pass.type = pass.type === "password" ? "text" : "password";
