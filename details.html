@@ -14,19 +14,19 @@ display:flex;
 justify-content:center;
 align-items:center;
 
-/* smooth gradient background */
+
 
 background: linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);
 }
 
-/* center container */
+
 
 .container{
 width:400px;
 padding:40px;
 border-radius:16px;
 
-/* glass effect */
+
 
 background:rgba(30,41,59,0.6);
 backdrop-filter:blur(15px);
@@ -42,7 +42,7 @@ margin-bottom:25px;
 font-weight:600;
 }
 
-/* inputs */
+
 
 input{
 width:100%;
@@ -63,7 +63,7 @@ input::placeholder{
 color:#cbd5f5;
 }
 
-/* skill section */
+
 
 .skill-input{
 display:flex;
@@ -97,7 +97,7 @@ cursor:pointer;
 transform:scale(1.03);
 }
 
-/* skill tags */
+
 
 .skill-tags{
 margin-top:10px;
@@ -115,7 +115,7 @@ color:white;
 cursor:pointer;
 }
 
-/* create profile button */
+
 
 .submit-btn{
 margin-top:20px;
@@ -225,11 +225,11 @@ text-align:left;
     setupTagInput("teachSkill", "teachList");
     setupTagInput("learnSkill", "learnList");
 
-    // 3. Save Everything to Database
+    
     document.getElementById('createProfileBtn').addEventListener('click', async () => {
         const username = document.getElementById('usernameInput').value;
         
-        // Grab the text from the tags and remove the '✕' icon
+       
         const teachSkills = Array.from(document.querySelectorAll('#teachList span')).map(s => s.textContent.replace('✕', '').trim());
         const learnSkills = Array.from(document.querySelectorAll('#learnList span')).map(s => s.textContent.replace('✕', '').trim());
 
@@ -237,11 +237,11 @@ text-align:left;
 
         if (user && username) {
             try {
-                // A. Save Profile
+                
                 const { error: pError } = await supabaseClient.from('users_profile').upsert({ id: user.id, username: username });
                 if (pError) throw pError;
 
-                // B. Save Teach Skills (Updated to users_skills)
+                
                 for (let skill of teachSkills) {
                     const { error: sError } = await supabaseClient.from('users_skills').insert({
                         user_id: user.id,
@@ -251,7 +251,7 @@ text-align:left;
                     if (sError) console.error("Error saving teach skill:", sError.message);
                 }
 
-                // C. Save Learn Skills (Updated to users_skills)
+                
                 for (let skill of learnSkills) {
                     const { error: sError } = await supabaseClient.from('users_skills').insert({
                         user_id: user.id,
