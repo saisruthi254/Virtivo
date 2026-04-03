@@ -41,7 +41,7 @@ Virtivo Website Link:https://virtivo.vercel.app/
  
  Contact
 
-1.Name: T.Parinitha
+1. Name: T.Parinitha
   Email: parinitha.t12@gmail.com
 
 2. Name: R.Sai Sruthi
