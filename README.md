@@ -5,16 +5,16 @@ Project Description
 Virtivo is a platform where users can connect and exchange skills. It allows users to learn from others and also teach their own skills.
 
  Features
-.	User Authentication (Signup/Login)
-> Skill sharing and exchange system
->	User profile management
-> Study Rooms(User can create or join rooms for real-time collaboration)
->	Peer-to-peer learning
+1.	User Authentication (Signup/Login)
+2. Skill sharing and exchange system
+3.	User profile management
+4. Study Rooms(User can create or join rooms for real-time collaboration)
+5.	Peer-to-peer learning
 
  Tech Stack
->	Frontend: HTML, CSS, JavaScript
->	Backend: Supabase
->	Database: PostgreSQL
+1.	Frontend: HTML, CSS, JavaScript
+2.	Backend: Supabase
+3.	Database: PostgreSQL
 
 Database
 This project uses Supabase (PostgreSQL).
