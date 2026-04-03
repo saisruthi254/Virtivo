@@ -39,11 +39,11 @@ This project demonstrates the implementation of real-world concepts such as user
 Overall, Virtivo provides a scalable and practical solution for peer-to-peer learning and skill development.
 Virtivo Website Link:https://virtivo.vercel.app/
  Contact
-	>	Name: T.Parinitha
-	>	Email: parinitha.t12@gmail.com
+1.Name: T.Parinitha
+  Email: parinitha.t12@gmail.com
 
-  > Name: R.Sai Sruthi
-  > Email: saisruthi875@gmail.com
+2. Name: R.Sai Sruthi
+   Email: saisruthi875@gmail.com
 
-  > Name: K.Ram Charan
-  > Email: koratlaramcharan@gmail.com
+3. Name: K.Ram Charan
+   Email: koratlaramcharan@gmail.com
