@@ -25,11 +25,10 @@
             overflow: hidden;
         }
 
-        /* --- SIDEBAR & PROFILE --- */
-        /* --- SIDEBAR RE-DESIGN --- */
+       
 .sidebar {
-    width: 260px; /* Fixed width like ChatGPT */
-    background: rgba(15, 23, 42, 0.4); /* Dark translucent */
+    width: 260px; 
+    background: rgba(15, 23, 42, 0.4); 
     backdrop-filter: blur(20px);
     border-right: 1px solid var(--glass-border);
     display: flex;
@@ -52,18 +51,18 @@
     width: 40px;
     height: 40px;
     background: var(--accent);
-    border-radius: 10px; /* Modern rounded square */
+    border-radius: 10px; 
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
-/* ADD THIS NEW BLOCK BELOW YOUR .profile-icon CLASS */
+
 .profile-icon::after {
-    content: "My Avatar"; /* The text you want to see */
+    content: "My Avatar"; 
     position: absolute;
-    left: 55px; /* Adjusts the horizontal gap from the icon */
+    left: 55px; 
     top: 50%;
     transform: translateY(-50%);
     background: rgba(255, 255, 255, 0.1);
@@ -74,16 +73,16 @@
     color: white;
     border: 1px solid var(--glass-border);
     white-space: nowrap;
-    opacity: 0; /* Keeps it hidden until hovered */
+    opacity: 0; 
     transition: all 0.3s ease;
     pointer-events: none;
     z-index: 999;
 }
 
-/* THIS TRIGGERS THE POPUP */
+
 .profile-icon:hover::after {
     opacity: 1;
-    left: 65px; /* Makes it slide slightly to the right */
+    left: 65px; 
 }
 
 .user-name-tag {
@@ -115,9 +114,9 @@
     color: white;
 }
 
-/* Sidebar Connections Dropdown */
+
 .sidebar-inner-list {
-    display: none; /* Hidden until clicked */
+    display: none; 
     margin-top: 10px;
     padding-left: 10px;
     border-left: 1px solid #6366f1;
@@ -135,7 +134,7 @@
 .logout:hover {
     background: rgba(251, 113, 133, 0.1);
 }
-        /* --- MAIN CONTENT & SEARCH --- */
+        
         .main-content {
             flex: 1;
             display: flex;
@@ -241,11 +240,11 @@
         .bottom-actions { position: absolute; bottom: 40px; display: flex; gap: 20px; }
         .action-btn { padding: 12px 30px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-border); color: white; cursor: pointer; backdrop-filter: blur(5px); }
         .count-badge { background: #8b5cf6; padding: 2px 8px; border-radius: 6px; font-size: 12px; margin-left: 10px; }
-        /* Align the container and its content to the left */
+            
 .profile-container {
-    padding: 30px 20px 20px 20px; /* Top, Right, Bottom, Left */
+    padding: 30px 20px 20px 20px; 
     display: flex;
-    justify-content: flex-start; /* Moves icon to the left */
+    justify-content: flex-start; 
     align-items: center;
 }
 
@@ -264,13 +263,13 @@
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 .profile-icon {
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth bounce */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
     cursor: pointer;
 }
 
 .profile-icon:hover {
-    transform: scale(1.1) translateY(-2px); /* Lifts up */
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6); /* Vibrant glow */
+    transform: scale(1.1) translateY(-2px); 
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6); 
     filter: brightness(1.1);
 }
 
@@ -284,9 +283,9 @@
     outline: 3px solid rgba(99, 102, 241, 0.3);
     outline-offset: 4px;
 }  
-/* The main "Edit Profile" link */
+
 #edit-profile-btn {
-    color: #ffffff !important; /* Forces it to be white */
+    color: #ffffff !important; 
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -294,27 +293,27 @@
     transition: 0.3s;
 }
 
-/* The sub-options (Username / Password) */
+
 .sub-link {
     display: block;
-    padding: 12px 0 12px 25px; /* Indented for that 'nested' look */
+    padding: 12px 0 12px 25px; 
     font-size: 0.9rem;
-    color: #ffffff; /* Keeping these white too */
+    color: #ffffff; 
     text-decoration: none;
-    opacity: 0.8; /* Slightly see-through so they look like sub-items */
+    opacity: 0.8; 
     transition: 0.3s;
 }
 
-/* When you hover over them */
+
 .sub-link:hover, #edit-profile-btn:hover {
-    opacity: 1; /* Turns solid white */
-    background: rgba(255, 255, 255, 0.05); /* Very subtle highlight box */
+    opacity: 1; 
+    background: rgba(255, 255, 255, 0.05); 
     border-radius: 5px;
 }
 
-/* The container for the sub-options */
+
 #profile-options {
-    background: rgba(255, 255, 255, 0.02); /* Slightly lighter background for the sub-menu */
+    background: rgba(255, 255, 255, 0.02); 
     border-radius: 8px;
     margin-top: 5px;
 }  
@@ -337,7 +336,7 @@
     padding: 8px 12px;
     border-radius: 10px;
     max-width: 70%;
-    width: fit-content;   /* ⭐ THIS IS THE MAIN FIX */
+    width: fit-content;   
     word-wrap: break-word;
 }
 .sent {
@@ -379,7 +378,7 @@
     border-radius: 5px;
 }
 
-/* SHOW ON HOVER */
+
 .user-card:hover .user-options {
     display: block;
 }
@@ -419,9 +418,7 @@
             </div>
         </div>
 
-        <div class="nav-item">
-            <span class="nav-text">Weekly Report</span>
-        </div>
+        
 
         <div class="nav-item logout" onclick="supabaseClient.auth.signOut(); window.location.href='login.html'">
             <span class="nav-text">Log Out</span>
@@ -457,19 +454,19 @@
 
         let currentUserId = null;
 
-        // Start app
+        
         async function initDashboard() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) { window.location.href = 'login.html'; return; }
             currentUserId = user.id;
 
-            // Load Icon
+            
             const { data: profile } = await supabaseClient.from('users_profile').select('username').eq('id', user.id).single();
             if (profile && profile.username) {
-        // This line ensures only the VERY first letter is used
+        
         document.getElementById('userInitial').innerText = profile.username.charAt(0).toUpperCase();
     } else {
-        // Fallback to first letter of email if username isn't set yet
+        
         document.getElementById('userInitial').innerText = user.email.charAt(0).toUpperCase();
     }
             updateBadges();
@@ -483,7 +480,7 @@
             acceptedBadge.innerText = accCount || 0;
         }
 
-        // --- REQUESTS MODAL ---
+        
         async function openRequests() {
             document.getElementById('requestModal').style.display = 'flex';
             const list = document.getElementById('requestList');
@@ -517,7 +514,7 @@
             else { alert("Accepted!"); closeModal(); updateBadges(); }
         }
 
-        // --- ACCEPTED MODAL ---
+       
         async function openAccepted() {
             document.getElementById('acceptedModal').style.display = 'flex';
             const list = document.getElementById('acceptedList');
@@ -545,7 +542,7 @@
         function closeModal() { document.getElementById('requestModal').style.display = 'none'; }
         function closeAcceptedModal() { document.getElementById('acceptedModal').style.display = 'none'; }
 
-        // --- SEARCH ---
+        
         searchInput.addEventListener('input', async () => {
             const query = searchInput.value.trim();
             if (query.length > 0) {
@@ -607,7 +604,7 @@
             return;
         }
 
-        // --- FIX STARTS HERE: Grouping by Username ---
+        
        
 
         const uniqueConnections = {};
@@ -623,7 +620,7 @@ data.forEach(item => {
         friendId = item.sender_id;
     }
 
-    // keep SAME structure but store id also
+    
     if (!uniqueConnections[friendName]) {
         uniqueConnections[friendName] = {
             id: friendId,
@@ -661,7 +658,7 @@ data.forEach(item => {
         </div>
     `;
 }).join('');
-        // --- FIX ENDS HERE ---
+        
 
     } catch (err) {
         console.error("Connection Error:", err);
@@ -674,38 +671,39 @@ data.forEach(item => {
 const profileOptions = document.getElementById('profile-options');
 
 profileBtn.addEventListener('click', (e) => {
-    e.preventDefault(); // Prevents the page from jumping
+    e.preventDefault(); 
     const isHidden = profileOptions.style.display === 'none';
     profileOptions.style.display = isHidden ? 'block' : 'none';
 });
-// 1. Open the Username Modal
+
 document.querySelector('[href="edit-username.html"]').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('username-modal').style.display = 'flex';
 });
 
-// 2. Open the Password Modal
+
 document.querySelector('[href="change-password.html"]').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('password-modal').style.display = 'flex';
 });
 
-// 3. THE ACTUAL UPDATE LOGIC (USERNAME)
 async function saveUsername() {
     const newName = document.getElementById('new-username-input').value;
-    const { data, error } = await supabase
-        .from('profiles')
+
+    const { data, error } = await supabaseClient
+        .from('users_profile')
         .update({ username: newName })
-        .eq('id', (await supabase.auth.getUser()).data.user.id);
+        .eq('id', (await supabaseClient.auth.getUser()).data.user.id);
 
     if (error) alert("Error updating username: " + error.message);
     else {
         alert("Username updated successfully!");
-        location.reload(); // Refreshes the page to show the new name
+        document.getElementById('username-modal').style.display = 'none';
+        location.reload(); 
     }
 }
 
-// 4. THE ACTUAL UPDATE LOGIC (PASSWORD)
+
 async function savePassword() {
     const newPass = document.getElementById('new-password-input').value;
     const confirmPass = document.getElementById('confirm-password-input').value;
@@ -715,60 +713,68 @@ async function savePassword() {
         return;
     }
 
-    const { error } = await supabase.auth.updateUser({ password: newPass });
+    const { error } = await supabaseClient.auth.updateUser({ password: newPass });
 
     if (error) alert("Error: " + error.message);
     else {
-        alert("Password updated! Please log in again.");
+        alert("Password updated! ");
+        document.getElementById('password-modal').style.display = 'none';
+        location.reload(); 
         closeModals();
     }
+    document.getElementById('password-modal').style.display = 'none';
 }
 
 function closeModals() {
     document.getElementById('username-modal').style.display = 'none';
     document.getElementById('password-modal').style.display = 'none';
 }
-// 1. Open the Skills Modal
 document.querySelector('[href="update-skills.html"]')?.addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('skills-modal').style.display = 'flex';
-    // Optional: Pre-fill the boxes with their current skills if you've fetched them
+    
 });
 
 
 async function saveSkillsToSupabase() {
-    console.log("Save button is firing...");
-    
-    // 1. Get the values
-    const teachVal = document.getElementById('input-teach')?.value;
-    const learnVal = document.getElementById('input-learn')?.value;
-
-    if (!teachVal || !learnVal) {
-        alert("Please fill in both boxes!");
-        return;
-    }
-
     try {
-        // 2. Try the Supabase update
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-            const { error } = await supabase
-                .from('profiles')
-                .update({ teach: teachVal, learn: learnVal })
-                .eq('id', user.id);
+        const teachVal = document.getElementById('input-teach').value;
+        const learnVal = document.getElementById('input-learn').value;
 
-            if (error) throw error;
-            
-            alert("Skills saved to database! 🚀");
+        const { data: { user } } = await supabaseClient.auth.getUser();
+
+        
+        const { error: deleteError } = await supabaseClient
+            .from('users_skills')
+            .delete()
+            .eq('user_id', user.id);
+
+        if (deleteError) {
+            alert("Error deleting skills");
+            return;
         }
-    } catch (err) {
-        console.error("Database Error:", err.message);
-        alert("Saved locally, but database failed: " + err.message);
-    } finally {
-        // 3. THIS FORCES THE POPUP TO CLOSE NO MATTER WHAT
+
+        // INSERT new skills
+        const { error: insertError } = await supabaseClient
+            .from('users_skills')
+            .insert([
+                { user_id: user.id, skill_name: teachVal, skill_type: "teach" },
+                { user_id: user.id, skill_name: learnVal, skill_type: "learn" }
+            ]);
+
+        if (insertError) {
+            alert("Error inserting skills");
+            return;
+        }
+        console.log("ALERT SHOULD SHOW NOW");
+        
+        alert("Skills updated successfully!");
+
         document.getElementById('skills-popup').style.display = 'none';
-        console.log("Popup closed via Finally block.");
+
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong");
     }
 }
 let chatUserId = null;
@@ -784,8 +790,7 @@ function openChat(userId, username) {
     document.getElementById("chatUserName").innerText = username;
 
     const modal = document.getElementById("chatModal");
-    modal.style.display = "flex";   // THIS IS IMPORTANT
-
+    modal.style.display = "flex";   
     loadMessages();
 }
 
@@ -804,7 +809,7 @@ function closeStudyRoom() {
     document.getElementById("studyRoomModal").style.display = "none";
 }
 
-// LOAD MESSAGES
+
 async function loadMessages() {
     const box = document.getElementById("chatMessages");
     box.innerHTML = "Loading...";
@@ -833,7 +838,7 @@ async function loadMessages() {
     box.scrollTop = box.scrollHeight;
 }
 
-// SEND MESSAGE
+
 async function sendMessage() {
     const input = document.getElementById("chatInput");
     const text = input.value.trim();
@@ -983,6 +988,7 @@ function startStudyRoom() {
         <button onclick="closePopup()" style="background:transparent; color:#888; border:none; margin-top:15px; cursor:pointer;">Cancel</button>
     </div>
 </div>
+
 <script>
 function showPopup() {
     document.getElementById('skills-popup').style.display = 'flex';
@@ -993,38 +999,56 @@ function closePopup() {
 }
 
 async function saveAndClose() {
-    // 1. Get values before closing
     const teachVal = document.getElementById('input-teach').value;
     const learnVal = document.getElementById('input-learn').value;
 
-    // 2. CLOSE THE POPUP IMMEDIATELY so it never gets stuck
+    
     closePopup();
 
-    // 3. Save in background using your correct client name: supabaseClient
     try {
-        if (typeof supabaseClient !== 'undefined') {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (user) {
-                const { error } = await supabaseClient
-                    .from('profiles')
-                    .update({ teach: teachVal, learn: learnVal })
-                    .eq('id', user.id);
-                
-                if (error) {
-                    console.error("DB Error:", error.message);
-                } else {
-                    alert("Skills Updated Successfully!");
-                    location.reload(); 
-                }
-            }
+        const { data: { user } } = await supabaseClient.auth.getUser();
+
+        if (!user) {
+            alert("User not found");
+            return;
         }
+
+        
+        const { error: deleteError } = await supabaseClient
+            .from('users_skills')
+            .delete()
+            .eq('user_id', user.id);
+
+        if (deleteError) {
+            console.error(deleteError);
+            return;
+        }
+
+        
+        const { error: insertError } = await supabaseClient
+            .from('users_skills')
+            .insert([
+                { user_id: user.id, skill_name: teachVal, skill_type: "teach" },
+                { user_id: user.id, skill_name: learnVal, skill_type: "learn" }
+            ]);
+
+        if (insertError) {
+            console.error(insertError);
+            return;
+        }
+
+       
+        alert("Skills Updated Successfully!");
+
+        location.reload();
+
     } catch (e) {
-        console.error("Background save failed, but popup is already closed:", e);
+        console.error("Error:", e);
     }
 }
 
 </script>
-<!-- CHAT MODAL -->
+
 <div id="chatModal" style="
     display:none;
     position:fixed;
@@ -1043,23 +1067,23 @@ async function saveAndClose() {
     box-shadow:0 15px 40px rgba(0,0,0,0.7);
 ">
 
-    <!-- Header -->
+    
     <div style="padding:12px; background:#2a2a3d; display:flex; justify-content:space-between;">
         <span id="chatUserName">User</span>
         <span onclick="closeChat()" style="cursor:pointer;">✕</span>
     </div>
 
-    <!-- Messages -->
+    
     <div id="chatMessages" style="flex:1; padding:10px; overflow-y:auto;"></div>
 
-    <!-- Input -->
+    
     <div style="display:flex; align-items:center; gap:8px; border-top:1px solid #444; padding:5px;">
 
-    <!-- INPUT -->
+    
     <input id="chatInput" type="text" placeholder="Type a message..." 
         style="flex:1; padding:12px; background:#2a2a3d; color:white; border:none; border-radius:6px;">
 
-    <!-- SEND BUTTON -->
+    
     <div style="display:flex; border-top:1px solid #444;">
     
     <button onclick="sendMessage()" 
