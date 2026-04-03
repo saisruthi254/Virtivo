@@ -5,7 +5,7 @@ Project Description
 Virtivo is a platform where users can connect and exchange skills. It allows users to learn from others and also teach their own skills.
 
  Features
-->	User Authentication (Signup/Login)
+.	User Authentication (Signup/Login)
 > Skill sharing and exchange system
 >	User profile management
 > Study Rooms(User can create or join rooms for real-time collaboration)
