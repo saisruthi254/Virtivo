@@ -14,14 +14,13 @@ display:flex;
 justify-content:center;
 align-items:center;
 
-/* new aesthetic background */
 
 background-image:url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f");
 background-size:cover;
 background-position:center;
 }
 
-/* soft dark overlay */
+
 
 .overlay{
 width:100%;
@@ -32,7 +31,7 @@ align-items:center;
 background:rgba(0,0,0,0.45);
 }
 
-/* glass card */
+
 
 .container{
 width:360px;
@@ -48,7 +47,7 @@ text-align:center;
 box-shadow:0 12px 35px rgba(0,0,0,0.4);
 }
 
-/* title */
+
 
 h1{
 margin-bottom:25px;
@@ -56,7 +55,7 @@ color:white;
 font-weight:600;
 }
 
-/* input fields */
+
 
 input{
 width:100%;
@@ -77,7 +76,7 @@ input::placeholder{
 color:#cbd5f5;
 }
 
-/* button */
+
 
 button{
 width:100%;
@@ -97,7 +96,7 @@ button:hover{
 opacity:0.9;
 }
 
-/* login link */
+
 
 .login-link{
 display:block;
@@ -146,11 +145,11 @@ Already have an account? Login
   const supabaseUrl = 'https://fyojiyvwfzwaxefgwncj.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5b2ppeXZ3Znp3YXhlZmd3bmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjY4MjgsImV4cCI6MjA5MDU0MjgyOH0.j6zasi2bFDUzvYbmJBGryRna8gAMuN4NBqYZ8WyKGYw';
 
-  // Use window.supabase to avoid the 'already declared' or 'undefined' error
+  
   const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
   document.getElementById('signupBtn').addEventListener('click', async () => {
-    // Grab the values
+    
     const email = document.getElementById('emailInput').value;
     const password = document.getElementById('passwordInput').value;
 
@@ -159,7 +158,7 @@ Already have an account? Login
       return;
     }
 
-    // Use supabaseClient here
+    
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
       password: password
