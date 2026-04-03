@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Login - Virtivo</title>
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI',sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+background: linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);
+}
+
+.container{
+width:380px;
+padding:40px;
+border-radius:16px;
+
+background:rgba(30,41,59,0.6);
+backdrop-filter:blur(15px);
+
+box-shadow:0 10px 40px rgba(0,0,0,0.5);
+
+text-align:center;
+}
+
+h1{
+color:white;
+margin-bottom:25px;
+}
+
+.input-group{
+position:relative;
+margin-bottom:15px;
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:none;
+
+background:rgba(255,255,255,0.08);
+color:white;
+
+outline:none;
+
+margin-bottom:15px;
+}
+
+input::placeholder{
+color:#cbd5f5;
+}
+
+.show-pass{
+position:absolute;
+right:10px;
+top:10px;
+
+cursor:pointer;
+color:#cbd5f5;
+font-size:14px;
+}
+
+.login-btn{
+width:100%;
+padding:14px;
+
+border:none;
+border-radius:30px;
+
+background:linear-gradient(90deg,#6366f1,#8b5cf6);
+
+color:white;
+font-size:15px;
+
+cursor:pointer;
+
+transition:0.3s;
+}
+
+.login-btn:hover{
+transform:scale(1.03);
+box-shadow:0 6px 20px rgba(99,102,241,0.5);
+}
+
+.bottom-text{
+margin-top:15px;
+color:#cbd5f5;
+font-size:14px;
+}
+
+.bottom-text a{
+color:#a78bfa;
+text-decoration:none;
+}
+
+.bottom-text a:hover{
+text-decoration:underline;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Welcome Back</h1>
+
+<form>
+
+<input type="email" id="email" placeholder="Email" required>
+
+<div class="input-group">
+
+<input type="password" id="password" placeholder="Password" minlength="6" required>
+
+<span class="show-pass" onclick="togglePassword()">👁</span>
+
+</div>
+
+<button type="button" id="loginBtn" class="login-btn">Login</button>
+
+</form>
+
+<div class="bottom-text">
+
+Don't have an account?  
+<a href="signup.html">Create Account</a>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // 2. Initialize Supabase
+    const supabaseUrl = 'https://fyojiyvwfzwaxefgwncj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5b2ppeXZ3Znp3YXhlZmd3bmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjY4MjgsImV4cCI6MjA5MDU0MjgyOH0.j6zasi2bFDUzvYbmJBGryRna8gAMuN4NBqYZ8WyKGYw';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    const loginBtn = document.getElementById('loginBtn');
+
+    // 3. Login Event Listener
+    loginBtn.addEventListener('click', async () => {
+        // These IDs MUST match the 'id' attributes in your HTML
+        const emailField = document.getElementById('email');
+        const passwordField = document.getElementById('password');
+
+        if (!emailField || !passwordField) {
+            console.error("HTML Input elements missing!");
+            return;
+        }
+
+        const email = emailField.value;
+        const password = passwordField.value;
+
+        if (!email || !password) {
+            alert("Please enter both email and password.");
+            return;
+        }
+
+        console.log("Attempting login...");
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            alert("Login Error: " + error.message);
+        } else {
+            console.log("Success! Redirecting...");
+            const initial = email.charAt(0).toUpperCase(); 
+            localStorage.setItem('userInitial', initial);
+            window.location.href = 'dashboard.html'; 
+        }
+    });
+
+    // 4. Password Toggle
+    function togglePassword() {
+        const pass = document.getElementById("password");
+        pass.type = pass.type === "password" ? "text" : "password";
+    }
+</script>
+
+</body>
+
+</html>

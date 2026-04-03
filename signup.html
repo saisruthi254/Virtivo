@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Create Account - Virtivo</title>
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI', sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+/* new aesthetic background */
+
+background-image:url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f");
+background-size:cover;
+background-position:center;
+}
+
+/* soft dark overlay */
+
+.overlay{
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+background:rgba(0,0,0,0.45);
+}
+
+/* glass card */
+
+.container{
+width:360px;
+padding:40px;
+
+background:rgba(30,41,59,0.85);
+border-radius:16px;
+
+backdrop-filter:blur(8px);
+
+text-align:center;
+
+box-shadow:0 12px 35px rgba(0,0,0,0.4);
+}
+
+/* title */
+
+h1{
+margin-bottom:25px;
+color:white;
+font-weight:600;
+}
+
+/* input fields */
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+
+border-radius:8px;
+border:none;
+
+background:rgba(255,255,255,0.1);
+color:white;
+
+font-size:14px;
+outline:none;
+}
+
+input::placeholder{
+color:#cbd5f5;
+}
+
+/* button */
+
+button{
+width:100%;
+padding:12px;
+
+border:none;
+border-radius:25px;
+
+background:linear-gradient(90deg,#6366f1,#8b5cf6);
+
+color:white;
+font-size:15px;
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+/* login link */
+
+.login-link{
+display:block;
+margin-top:15px;
+color:#a5b4fc;
+text-decoration:none;
+font-size:14px;
+}
+
+.login-link:hover{
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+
+<div class="container">
+
+<h1>Create Account</h1>
+
+<form action="details.html">
+
+<input type="email" id="emailInput" placeholder="Email" required>
+
+<input type="password" id="passwordInput" placeholder="Set Password" minlength="6" required>
+
+<button type="button" id="signupBtn">Create Account</button>
+
+</form>
+
+<a class="login-link" href="login.html">
+Already have an account? Login
+</a>
+
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+  const supabaseUrl = 'https://fyojiyvwfzwaxefgwncj.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5b2ppeXZ3Znp3YXhlZmd3bmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjY4MjgsImV4cCI6MjA5MDU0MjgyOH0.j6zasi2bFDUzvYbmJBGryRna8gAMuN4NBqYZ8WyKGYw';
+
+  // Use window.supabase to avoid the 'already declared' or 'undefined' error
+  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  document.getElementById('signupBtn').addEventListener('click', async () => {
+    // Grab the values
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    // Use supabaseClient here
+    const { data, error } = await supabaseClient.auth.signUp({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      alert("Signup Failed: " + error.message);
+    } else {
+      alert("Signup Success!");
+      window.location.href = "details.html";
+    }
+  });
+</script>
+
+</body>
+
+</html>

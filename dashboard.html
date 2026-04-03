@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Virtivo</title>
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+    :root {
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --gradient: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+            --accent: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--gradient);
+            color: white;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR & PROFILE --- */
+        /* --- SIDEBAR RE-DESIGN --- */
+.sidebar {
+    width: 260px; /* Fixed width like ChatGPT */
+    background: rgba(15, 23, 42, 0.4); /* Dark translucent */
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px 0;
+    z-index: 100;
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 20px;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border-radius: 10px; /* Modern rounded square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+/* ADD THIS NEW BLOCK BELOW YOUR .profile-icon CLASS */
+.profile-icon::after {
+    content: "My Avatar"; /* The text you want to see */
+    position: absolute;
+    left: 55px; /* Adjusts the horizontal gap from the icon */
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: white;
+    border: 1px solid var(--glass-border);
+    white-space: nowrap;
+    opacity: 0; /* Keeps it hidden until hovered */
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* THIS TRIGGERS THE POPUP */
+.profile-icon:hover::after {
+    opacity: 1;
+    left: 65px; /* Makes it slide slightly to the right */
+}
+
+.user-name-tag {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.sidebar-menu-container {
+    flex: 1;
+    padding: 0 12px;
+    overflow-y: auto;
+}
+
+.nav-item {
+    padding: 12px 16px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+/* Sidebar Connections Dropdown */
+.sidebar-inner-list {
+    display: none; /* Hidden until clicked */
+    margin-top: 10px;
+    padding-left: 10px;
+    border-left: 1px solid #6366f1;
+}
+
+.sidebar-footer {
+    padding: 12px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.logout {
+    color: #fb7185 !important;
+}
+
+.logout:hover {
+    background: rgba(251, 113, 133, 0.1);
+}
+        /* --- MAIN CONTENT & SEARCH --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            padding: 40px;
+            position: relative;
+        }
+
+        .search-wrapper {
+            position: absolute;
+            top: 60px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #dashboardSearch {
+            width: 50%;
+            max-width: 550px;
+            padding: 14px 25px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: white;
+            outline: none;
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            text-align: center;
+            transition: 0.4s ease;
+        }
+
+        #dashboardSearch:focus {
+            border-color: #8b5cf6;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+            width: 55%;
+        }
+
+        #searchResults {
+            width: 50%;
+            max-width: 550px;
+            margin-top: 15px;
+            background: rgba(30, 41, 59, 0.98);
+            border-radius: 20px;
+            display: none; 
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            padding: 10px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-info { flex: 1; }
+        .user-info .name { font-weight: bold; display: block; }
+        .user-info .skill-tag { font-size: 12px; color: #94a3b8; }
+
+        .request-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .hero-text {
+            font-size: 68px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #8b5cf6, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .bottom-actions { position: absolute; bottom: 40px; display: flex; gap: 20px; }
+        .action-btn { padding: 12px 30px; border-radius: 12px; background: var(--glass); border: 1px solid var(--glass-border); color: white; cursor: pointer; backdrop-filter: blur(5px); }
+        .count-badge { background: #8b5cf6; padding: 2px 8px; border-radius: 6px; font-size: 12px; margin-left: 10px; }
+        /* Align the container and its content to the left */
+.profile-container {
+    padding: 30px 20px 20px 20px; /* Top, Right, Bottom, Left */
+    display: flex;
+    justify-content: flex-start; /* Moves icon to the left */
+    align-items: center;
+}
+
+.profile-icon {
+    
+    width: 45px;
+    height: 45px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.profile-icon {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth bounce */
+    cursor: pointer;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1) translateY(-2px); /* Lifts up */
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6); /* Vibrant glow */
+    filter: brightness(1.1);
+}
+
+
+
+.profile-container {
+    position: relative;
+}
+
+.profile-icon:hover {
+    outline: 3px solid rgba(99, 102, 241, 0.3);
+    outline-offset: 4px;
+}  
+/* The main "Edit Profile" link */
+#edit-profile-btn {
+    color: #ffffff !important; /* Forces it to be white */
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    transition: 0.3s;
+}
+
+/* The sub-options (Username / Password) */
+.sub-link {
+    display: block;
+    padding: 12px 0 12px 25px; /* Indented for that 'nested' look */
+    font-size: 0.9rem;
+    color: #ffffff; /* Keeping these white too */
+    text-decoration: none;
+    opacity: 0.8; /* Slightly see-through so they look like sub-items */
+    transition: 0.3s;
+}
+
+/* When you hover over them */
+.sub-link:hover, #edit-profile-btn:hover {
+    opacity: 1; /* Turns solid white */
+    background: rgba(255, 255, 255, 0.05); /* Very subtle highlight box */
+    border-radius: 5px;
+}
+
+/* The container for the sub-options */
+#profile-options {
+    background: rgba(255, 255, 255, 0.02); /* Slightly lighter background for the sub-menu */
+    border-radius: 8px;
+    margin-top: 5px;
+}  
+.custom-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: #1e1e2f; padding: 30px; border-radius: 15px; border: 1px solid #444;
+    text-align: center; color: white; width: 300px;
+}
+.modal-content input {
+    width: 100%; padding: 10px; margin: 10px 0; background: #2a2a3d; border: none; color: white;
+}
+.btn-save { background: #6c5ce7; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+.btn-cancel { background: transparent; color: #aaa; border: none; cursor: pointer; }
+.message {
+    margin: 6px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+    width: fit-content;   /* ⭐ THIS IS THE MAIN FIX */
+    word-wrap: break-word;
+}
+.sent {
+    background: #6366f1;
+    margin-left: auto;
+    text-align: left;
+}
+
+.received {
+    background: #374151;
+    margin-right: auto;
+}
+.user-card {
+    position: relative;
+}
+
+.user-options {
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #1f2937;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 6px;
+    z-index: 100;
+    width: 140px;
+}
+
+.user-options div {
+    padding: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    color: white;
+}
+
+.user-options div:hover {
+    background: #374151;
+    border-radius: 5px;
+}
+
+/* SHOW ON HOVER */
+.user-card:hover .user-options {
+    display: block;
+}
+
+    
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+    <div class="profile-container">
+        <div class="profile-icon" id="userInitial"></div>
+    </div>
+
+    <div class="sidebar-menu-container">
+         <li class="nav-item">
+  <div class="dropdown">
+    <a href="#" class="nav-link" id="edit-profile-btn">
+      <span>Edit Profile</span>
+      <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 10px;"></i>
+    </a>
+    <div class="dropdown-content" id="profile-options" style="display: none;">
+      <a href="edit-username.html" class="sub-link"> Edit Username</a>
+      <a href="change-password.html" class="sub-link"> Change Password</a>
+    </div>
+  </div>
+</li>
+        
+        <li class="nav-item">
+    <a href="javascript:void(0)" onclick="showPopup()" class="nav-link" style="color: white; text-decoration: none;">
+        Update Skills
+    </a>
+</li>
+        <div class="nav-item" onclick="toggleConnections(event)">
+            <span class="nav-text">Connections</span>
+            <div id="connectionsDropdown" class="sidebar-inner-list" style="display:none;">
+                <div id="connectionsList" style="font-size: 12px; color: #cbd5e1; padding: 10px 0;"></div>
+            </div>
+        </div>
+
+        <div class="nav-item">
+            <span class="nav-text">Weekly Report</span>
+        </div>
+
+        <div class="nav-item logout" onclick="supabaseClient.auth.signOut(); window.location.href='login.html'">
+            <span class="nav-text">Log Out</span>
+        </div>
+    </div>
+</div>
+    <div class="main-content">
+        <div class="search-wrapper">
+            <input type="text" id="dashboardSearch" placeholder="Search for skills...">
+            <div id="searchResults"></div>
+        </div>
+
+        <h1 class="hero-text" id="heroText">Learn. Teach. Grow.</h1>
+
+        <div class="bottom-actions">
+            <button class="action-btn" onclick="openRequests()">Requests <span class="count-badge">0</span></button>
+            <button class="action-btn" onclick="openAccepted()">Accepted <span class="count-badge">0</span></button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://fyojiyvwfzwaxefgwncj.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5b2ppeXZ3Znp3YXhlZmd3bmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjY4MjgsImV4cCI6MjA5MDU0MjgyOH0.j6zasi2bFDUzvYbmJBGryRna8gAMuN4NBqYZ8WyKGYw';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const searchInput = document.getElementById('dashboardSearch');
+        const resultsBox = document.getElementById('searchResults');
+        const heroText = document.getElementById('heroText');
+        const userIcon = document.getElementById('userInitial');
+        
+        const requestBadge = document.querySelector('.bottom-actions .action-btn:nth-child(1) .count-badge');
+        const acceptedBadge = document.querySelector('.bottom-actions .action-btn:nth-child(2) .count-badge');
+
+        let currentUserId = null;
+
+        // Start app
+        async function initDashboard() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) { window.location.href = 'login.html'; return; }
+            currentUserId = user.id;
+
+            // Load Icon
+            const { data: profile } = await supabaseClient.from('users_profile').select('username').eq('id', user.id).single();
+            if (profile && profile.username) {
+        // This line ensures only the VERY first letter is used
+        document.getElementById('userInitial').innerText = profile.username.charAt(0).toUpperCase();
+    } else {
+        // Fallback to first letter of email if username isn't set yet
+        document.getElementById('userInitial').innerText = user.email.charAt(0).toUpperCase();
+    }
+            updateBadges();
+        }
+
+        async function updateBadges() {
+            const { count: reqCount } = await supabaseClient.from('requests').select('*', { count: 'exact', head: true }).eq('receiver_id', currentUserId).eq('status', 'pending');
+            requestBadge.innerText = reqCount || 0;
+
+            const { count: accCount } = await supabaseClient.from('requests').select('*', { count: 'exact', head: true }).eq('sender_id', currentUserId).eq('status', 'accepted');
+            acceptedBadge.innerText = accCount || 0;
+        }
+
+        // --- REQUESTS MODAL ---
+        async function openRequests() {
+            document.getElementById('requestModal').style.display = 'flex';
+            const list = document.getElementById('requestList');
+            list.innerHTML = '<div style="color:#94a3b8;">Loading...</div>';
+
+            const { data, error } = await supabaseClient
+                .from('requests')
+                .select(`id, skill_name, users_profile!requests_sender_id_fkey ( username )`)
+                .eq('receiver_id', currentUserId)
+                .eq('status', 'pending');
+
+            if (error || !data || data.length === 0) {
+                list.innerHTML = '<div style="color:#94a3b8; padding:20px; text-align:center;">No pending requests.</div>';
+                return;
+            }
+
+            list.innerHTML = data.map(req => `
+                <div style="background:#0f172a; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="color:white; font-weight:bold;">${req.users_profile.username}</div>
+                        <div style="color:#94a3b8; font-size:12px;">Wants to learn: ${req.skill_name}</div>
+                    </div>
+                    <button onclick="acceptRequest('${req.id}')" style="background:#6366f1; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Accept</button>
+                </div>
+            `).join('');
+        }
+
+        async function acceptRequest(requestId) {
+            const { error } = await supabaseClient.from('requests').update({ status: 'accepted' }).eq('id', requestId);
+            if (error) alert(error.message);
+            else { alert("Accepted!"); closeModal(); updateBadges(); }
+        }
+
+        // --- ACCEPTED MODAL ---
+        async function openAccepted() {
+            document.getElementById('acceptedModal').style.display = 'flex';
+            const list = document.getElementById('acceptedList');
+            list.innerHTML = '<div style="color:#94a3b8;">Loading mentors...</div>';
+
+            const { data, error } = await supabaseClient
+                .from('requests')
+                .select(`skill_name, users_profile!requests_receiver_id_fkey ( username )`)
+                .eq('sender_id', currentUserId)
+                .eq('status', 'accepted');
+
+            if (error || !data || data.length === 0) {
+                list.innerHTML = '<div style="color:#94a3b8; padding:20px; text-align:center;">No mentors have accepted yet.</div>';
+                return;
+            }
+
+            list.innerHTML = data.map(req => `
+                <div style="background:#0f172a; padding:15px; border-radius:10px; margin-bottom:10px; border-left:4px solid #10b981;">
+                    <div style="color:white; font-weight:bold;">${req.users_profile.username}</div>
+                    <div style="color:#94a3b8; font-size:13px;">Teaching you: ${req.skill_name}</div>
+                </div>
+            `).join('');
+        }
+
+        function closeModal() { document.getElementById('requestModal').style.display = 'none'; }
+        function closeAcceptedModal() { document.getElementById('acceptedModal').style.display = 'none'; }
+
+        // --- SEARCH ---
+        searchInput.addEventListener('input', async () => {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                heroText.style.display = 'none';
+                resultsBox.style.display = 'block';
+                const { data } = await supabaseClient.from('users_skills').select(`skill_name, user_id, users_profile ( username )`).ilike('skill_type', 'teach').ilike('skill_name', `%${query}%`).neq('user_id', currentUserId);
+                renderResults(data);
+            } else {
+                heroText.style.display = 'block';
+                resultsBox.style.display = 'none';
+            }
+        });
+
+        function renderResults(users) {
+            if (!users || users.length === 0) { resultsBox.innerHTML = `<div style="padding:20px; text-align:center;">No matches.</div>`; return; }
+            resultsBox.innerHTML = users.map(row => {
+                const name = row.users_profile?.username || "User";
+                return `<div class="user-card">
+                    <div class="user-avatar">${name[0].toUpperCase()}</div>
+                    <div class="user-info"><span class="name">${name}</span><span class="skill-tag">${row.skill_name}</span></div>
+                    <button class="request-btn" onclick="sendRequest('${row.user_id}', '${row.skill_name}')">Request</button>
+                </div>`;
+            }).join('');
+        }
+
+        async function sendRequest(targetId, skill) {
+            const { error } = await supabaseClient.from('requests').insert([{ sender_id: currentUserId, receiver_id: targetId, skill_name: skill }]);
+            if (error) alert(error.message); else { alert("Sent!"); updateBadges(); }
+        }
+        async function toggleConnections(event) {
+    if (event) event.stopPropagation();
+
+    const div = document.getElementById('connectionsDropdown');
+    const list = document.getElementById('connectionsList');
+
+    if (div.style.display === 'block') {
+        div.style.display = 'none';
+        return;
+    }
+
+    div.style.display = 'block';
+    list.innerHTML = '<div style="color:#94a3b8; font-size:10px; padding:5px;">Loading...</div>';
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('requests')
+            .select(`
+                skill_name, sender_id, receiver_id,
+                sender:users_profile!requests_sender_id_fkey ( username ),
+                receiver:users_profile!requests_receiver_id_fkey ( username )
+            `)
+            .eq('status', 'accepted')
+            .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            list.innerHTML = '<div style="color:#94a3b8; font-size:11px; padding:5px;">No connections yet.</div>';
+            return;
+        }
+
+        // --- FIX STARTS HERE: Grouping by Username ---
+       
+
+        const uniqueConnections = {};
+        
+data.forEach(item => {
+    let friendName, friendId;
+
+    if (item.sender_id === currentUserId) {
+        friendName = item.receiver.username;
+        friendId = item.receiver_id;
+    } else {
+        friendName = item.sender.username;
+        friendId = item.sender_id;
+    }
+
+    // keep SAME structure but store id also
+    if (!uniqueConnections[friendName]) {
+        uniqueConnections[friendName] = {
+            id: friendId,
+            skills: []
+        };
+    }
+
+    uniqueConnections[friendName].skills.push(item.skill_name);
+});
+
+  
+
+      list.innerHTML = Object.keys(uniqueConnections).map(name => {
+    const user = uniqueConnections[name];
+
+    return `
+        <div class="user-card" style="margin-bottom:8px; padding:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
+            
+            <!-- OPTIONS -->
+            <div class="user-options">
+                <div onclick="openChat('${user.id}', '${name}')">💬 Start Conversation</div>
+                <div onclick="reportUser('${user.id}', '${name}')">🚨 Report</div>
+                <div onclick="blockUser('${user.id}', '${name}')">⛔ Block</div>
+            </div>
+
+            <!-- USER INFO -->
+            <div style="font-weight:bold; color:white; font-size:13px;">
+                ${name}
+            </div>
+            
+            <div style="font-size:10px; color:#a78bfa;">
+                ${user.skills.join(', ')}
+            </div>
+
+        </div>
+    `;
+}).join('');
+        // --- FIX ENDS HERE ---
+
+    } catch (err) {
+        console.error("Connection Error:", err);
+        list.innerHTML = '<div style="color:#ff4b2b; font-size:10px; padding:5px;">Error loading list.</div>';
+    }
+}
+
+        initDashboard();
+        const profileBtn = document.getElementById('edit-profile-btn');
+const profileOptions = document.getElementById('profile-options');
+
+profileBtn.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevents the page from jumping
+    const isHidden = profileOptions.style.display === 'none';
+    profileOptions.style.display = isHidden ? 'block' : 'none';
+});
+// 1. Open the Username Modal
+document.querySelector('[href="edit-username.html"]').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('username-modal').style.display = 'flex';
+});
+
+// 2. Open the Password Modal
+document.querySelector('[href="change-password.html"]').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('password-modal').style.display = 'flex';
+});
+
+// 3. THE ACTUAL UPDATE LOGIC (USERNAME)
+async function saveUsername() {
+    const newName = document.getElementById('new-username-input').value;
+    const { data, error } = await supabase
+        .from('profiles')
+        .update({ username: newName })
+        .eq('id', (await supabase.auth.getUser()).data.user.id);
+
+    if (error) alert("Error updating username: " + error.message);
+    else {
+        alert("Username updated successfully!");
+        location.reload(); // Refreshes the page to show the new name
+    }
+}
+
+// 4. THE ACTUAL UPDATE LOGIC (PASSWORD)
+async function savePassword() {
+    const newPass = document.getElementById('new-password-input').value;
+    const confirmPass = document.getElementById('confirm-password-input').value;
+
+    if (newPass !== confirmPass) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    const { error } = await supabase.auth.updateUser({ password: newPass });
+
+    if (error) alert("Error: " + error.message);
+    else {
+        alert("Password updated! Please log in again.");
+        closeModals();
+    }
+}
+
+function closeModals() {
+    document.getElementById('username-modal').style.display = 'none';
+    document.getElementById('password-modal').style.display = 'none';
+}
+// 1. Open the Skills Modal
+document.querySelector('[href="update-skills.html"]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('skills-modal').style.display = 'flex';
+    // Optional: Pre-fill the boxes with their current skills if you've fetched them
+});
+
+
+async function saveSkillsToSupabase() {
+    console.log("Save button is firing...");
+    
+    // 1. Get the values
+    const teachVal = document.getElementById('input-teach')?.value;
+    const learnVal = document.getElementById('input-learn')?.value;
+
+    if (!teachVal || !learnVal) {
+        alert("Please fill in both boxes!");
+        return;
+    }
+
+    try {
+        // 2. Try the Supabase update
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+            const { error } = await supabase
+                .from('profiles')
+                .update({ teach: teachVal, learn: learnVal })
+                .eq('id', user.id);
+
+            if (error) throw error;
+            
+            alert("Skills saved to database! 🚀");
+        }
+    } catch (err) {
+        console.error("Database Error:", err.message);
+        alert("Saved locally, but database failed: " + err.message);
+    } finally {
+        // 3. THIS FORCES THE POPUP TO CLOSE NO MATTER WHAT
+        document.getElementById('skills-popup').style.display = 'none';
+        console.log("Popup closed via Finally block.");
+    }
+}
+let chatUserId = null;
+let chatUserName = "";
+let studyRoomApi = null;
+
+function openChat(userId, username) {
+    console.log("Opening chat:", userId, username);
+
+    chatUserId = userId;
+    chatUserName = username;
+
+    document.getElementById("chatUserName").innerText = username;
+
+    const modal = document.getElementById("chatModal");
+    modal.style.display = "flex";   // THIS IS IMPORTANT
+
+    loadMessages();
+}
+
+function closeChat() {
+    
+    document.getElementById("chatModal").style.display = "none";
+}
+
+function closeStudyRoom() {
+    if (studyRoomApi) {
+        studyRoomApi.dispose();
+        studyRoomApi = null;
+    }
+
+    document.getElementById("studyRoomContainer").innerHTML = "";
+    document.getElementById("studyRoomModal").style.display = "none";
+}
+
+// LOAD MESSAGES
+async function loadMessages() {
+    const box = document.getElementById("chatMessages");
+    box.innerHTML = "Loading...";
+
+    const { data, error } = await supabaseClient
+        .from("messages")
+        .select("*")
+        .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        box.innerHTML = "Error loading messages";
+        return;
+    }
+
+    const filtered = data.filter(m =>
+        (m.sender_id === currentUserId && m.receiver_id === chatUserId) ||
+        (m.sender_id === chatUserId && m.receiver_id === currentUserId)
+    );
+
+    box.innerHTML = filtered.map(m => {
+        const type = m.sender_id === currentUserId ? "sent" : "received";
+        return `<div class="message ${type}">${m.content}</div>`;
+    }).join("");
+
+    box.scrollTop = box.scrollHeight;
+}
+
+// SEND MESSAGE
+async function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const text = input.value.trim();
+
+    if (!text) {
+        alert("Enter a message");
+        return;
+    }
+
+    if (!chatUserId) {
+        alert("No user selected");
+        return;
+    }
+
+    console.log("Sending:", text);
+
+    const { error } = await supabaseClient
+        .from("messages")
+        .insert([{
+            sender_id: currentUserId,
+            receiver_id: chatUserId,
+            content: text
+        }]);
+
+    if (error) {
+        console.error(error);
+        alert("Failed to send message");
+        return;
+    }
+
+    input.value = "";
+    loadMessages();
+}
+function reportUser(userId, username) {
+    alert("Reported " + username);
+    console.log("Report:", userId);
+}
+
+function blockUser(userId, username) {
+    alert("Blocked " + username);
+    console.log("Blocked:", userId);
+}
+
+function startStudyRoom() {
+    if (!currentUserId) {
+        alert("Please log in again.");
+        return;
+    }
+
+    if (!chatUserId) {
+        alert("Open a chat first.");
+        return;
+    }
+
+    const participants = [currentUserId, chatUserId].sort().join("-");
+    const room = `virtivo-study-${participants}`;
+    const meetingContainer = document.getElementById("studyRoomContainer");
+    const meetingModal = document.getElementById("studyRoomModal");
+
+    if (!window.JitsiMeetExternalAPI) {
+        alert("Jitsi failed to load. Please refresh and try again.");
+        return;
+    }
+
+    if (studyRoomApi) {
+        studyRoomApi.dispose();
+        studyRoomApi = null;
+    }
+
+    meetingContainer.innerHTML = "";
+    document.getElementById("studyRoomUserName").innerText = chatUserName || "your connection";
+    meetingModal.style.display = "flex";
+
+    studyRoomApi = new JitsiMeetExternalAPI("meet.jit.si", {
+        roomName: room,
+        parentNode: meetingContainer,
+        width: "100%",
+        height: "100%"
+    });
+}
+    </script>
+
+    <div id="requestModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:#1e293b; width:90%; max-width:400px; padding:25px; border-radius:15px; border:1px solid #334155;">
+            <h2 style="color:white; margin-top:0;">Incoming Requests</h2>
+            <div id="requestList" style="max-height:300px; overflow-y:auto; margin-bottom:20px;"></div>
+            <button onclick="closeModal()" style="width:100%; padding:10px; border-radius:8px; border:none; background:#475569; color:white; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <div id="acceptedModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:#1e293b; width:90%; max-width:400px; padding:25px; border-radius:15px; border:1px solid #334155;">
+            <h2 style="color:white; margin-top:0;">My Mentors</h2>
+            <div id="acceptedList" style="max-height:300px; overflow-y:auto; margin-bottom:20px;"></div>
+            <button onclick="closeAcceptedModal()" style="width:100%; padding:10px; border-radius:8px; border:none; background:#475569; color:white; cursor:pointer;">Close</button>
+        </div>
+    </div>
+   <div id="username-modal" class="custom-modal" style="display:none;">
+    <div class="modal-content">
+        <h3>Update Username</h3>
+        <input type="text" id="new-username-input" placeholder="Enter new username">
+        <div class="modal-buttons">
+            <button onclick="saveUsername()" class="btn-save">Save</button>
+            <button onclick="closeModals()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="password-modal" class="custom-modal" style="display:none;">
+    <div class="modal-content">
+        <h3>Change Password</h3>
+        <input type="password" id="new-password-input" placeholder="New Password">
+        <input type="password" id="confirm-password-input" placeholder="Confirm Password">
+        <div class="modal-buttons">
+            <button onclick="savePassword()" class="btn-save">Update Password</button>
+            <button onclick="closeModals()" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+<div id="skills-modal" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: #1e1e2f; padding: 40px; border-radius: 20px; border: 1px solid #444; width: 320px; text-align: center; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <h2 style="margin-bottom: 20px;">Update My Skills</h2>
+        
+        <div style="text-align: left;">
+            <label style="font-size: 0.8rem; color: #aaa;">Ready to Teach:</label>
+            <input type="text" id="teach-input" placeholder="e.g. Java, Python" style="width: 100%; padding: 12px; margin: 8px 0 20px 0; background: #2a2a3d; border: 1px solid #444; color: white; border-radius: 8px;">
+            
+            <label style="font-size: 0.8rem; color: #aaa;">Want to Learn:</label>
+            <input type="text" id="learn-input" placeholder="e.g. React, UI Design" style="width: 100%; padding: 12px; margin: 8px 0 20px 0; background: #2a2a3d; border: 1px solid #444; color: white; border-radius: 8px;">
+        </div>
+
+        <button onclick="saveSkillsToSupabase()" style="width: 100%; background: #6c5ce7; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px;">Save Changes</button>
+        <button onclick="closeSkillsModal()" style="background: transparent; color: #888; border: none; cursor: pointer; font-size: 0.9rem;">Maybe Later</button>
+    </div>
+</div>
+</div>
+<div id="skills-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1a1a2e; padding:30px; border-radius:15px; border:1px solid #444; width:300px; color:white; text-align:center;">
+        <h2 style="margin-top:0;">Update Skills</h2>
+        <div style="text-align:left; margin-top:20px;">
+            <label style="font-size:12px; color:#aaa;">TEACH:</label>
+            <input type="text" id="input-teach" style="width:100%; padding:10px; margin:8px 0 20px 0; background:#252545; border:none; color:white; border-radius:5px;">
+            <label style="font-size:12px; color:#aaa;">LEARN:</label>
+            <input type="text" id="input-learn" style="width:100%; padding:10px; margin:8px 0 20px 0; background:#252545; border:none; color:white; border-radius:5px;">
+        </div>
+        <button onclick="saveAndClose()" style="width:100%; background:#6c5ce7; color:white; border:none; padding:12px; border-radius:5px; cursor:pointer; font-weight:bold;">Save Changes</button>
+        <button onclick="closePopup()" style="background:transparent; color:#888; border:none; margin-top:15px; cursor:pointer;">Cancel</button>
+    </div>
+</div>
+<script>
+function showPopup() {
+    document.getElementById('skills-popup').style.display = 'flex';
+}
+
+function closePopup() {
+    document.getElementById('skills-popup').style.display = 'none';
+}
+
+async function saveAndClose() {
+    // 1. Get values before closing
+    const teachVal = document.getElementById('input-teach').value;
+    const learnVal = document.getElementById('input-learn').value;
+
+    // 2. CLOSE THE POPUP IMMEDIATELY so it never gets stuck
+    closePopup();
+
+    // 3. Save in background using your correct client name: supabaseClient
+    try {
+        if (typeof supabaseClient !== 'undefined') {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user) {
+                const { error } = await supabaseClient
+                    .from('profiles')
+                    .update({ teach: teachVal, learn: learnVal })
+                    .eq('id', user.id);
+                
+                if (error) {
+                    console.error("DB Error:", error.message);
+                } else {
+                    alert("Skills Updated Successfully!");
+                    location.reload(); 
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Background save failed, but popup is already closed:", e);
+    }
+}
+
+</script>
+<!-- CHAT MODAL -->
+<div id="chatModal" style="
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:600px;
+    max-width:90%;
+    height:500px;
+    background:#1e1e2f;
+    border-radius:15px;
+    border:1px solid #444;
+    z-index:9999;
+    flex-direction:column;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,0.7);
+">
+
+    <!-- Header -->
+    <div style="padding:12px; background:#2a2a3d; display:flex; justify-content:space-between;">
+        <span id="chatUserName">User</span>
+        <span onclick="closeChat()" style="cursor:pointer;">✕</span>
+    </div>
+
+    <!-- Messages -->
+    <div id="chatMessages" style="flex:1; padding:10px; overflow-y:auto;"></div>
+
+    <!-- Input -->
+    <div style="display:flex; align-items:center; gap:8px; border-top:1px solid #444; padding:5px;">
+
+    <!-- INPUT -->
+    <input id="chatInput" type="text" placeholder="Type a message..." 
+        style="flex:1; padding:12px; background:#2a2a3d; color:white; border:none; border-radius:6px;">
+
+    <!-- SEND BUTTON -->
+    <div style="display:flex; border-top:1px solid #444;">
+    
+    <button onclick="sendMessage()" 
+style="padding:10px 18px; background:#6366f1; border:none; color:white; min-width:80px;">Send</button>
+</div>
+<button onclick="startStudyRoom()" style="padding:10px; background:#10b981; border:none; color:white;">
+    Start Study Room
+</button>
+
+    
+
+    
+</div>
+
+</div>
+
+<div id="studyRoomModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(2, 6, 23, 0.92);
+    z-index:10000;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+">
+    <div style="
+        width:min(1200px, 96vw);
+        height:min(820px, 92vh);
+        background:#0f172a;
+        border:1px solid rgba(255,255,255,0.12);
+        border-radius:18px;
+        overflow:hidden;
+        display:flex;
+        flex-direction:column;
+        box-shadow:0 20px 60px rgba(0,0,0,0.55);
+    ">
+        <div style="padding:14px 18px; background:#111827; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div>
+                <div style="font-weight:700; color:white;">Virtivo Study Room</div>
+                <div style="font-size:12px; color:#94a3b8;">Meet with <span id="studyRoomUserName">your connection</span> without leaving the dashboard</div>
+            </div>
+            <button onclick="closeStudyRoom()" style="padding:10px 14px; background:#ef4444; border:none; color:white; border-radius:8px; cursor:pointer;">Close Room</button>
+        </div>
+        <div id="studyRoomContainer" style="flex:1; min-height:0; background:#020617;"></div>
+    </div>
+</div>
+</body>
+</html>

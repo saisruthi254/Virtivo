@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Profile Setup - Virtivo</title>
+
+<style>
+
+body{
+margin:0;
+font-family:'Segoe UI', sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+/* smooth gradient background */
+
+background: linear-gradient(135deg,#0f172a,#1e1b4b,#312e81);
+}
+
+/* center container */
+
+.container{
+width:400px;
+padding:40px;
+border-radius:16px;
+
+/* glass effect */
+
+background:rgba(30,41,59,0.6);
+backdrop-filter:blur(15px);
+
+box-shadow:0 10px 40px rgba(0,0,0,0.5);
+
+text-align:center;
+}
+
+h1{
+color:white;
+margin-bottom:25px;
+font-weight:600;
+}
+
+/* inputs */
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+
+border-radius:8px;
+border:none;
+
+background:rgba(255,255,255,0.08);
+color:white;
+
+outline:none;
+font-size:14px;
+}
+
+input::placeholder{
+color:#cbd5f5;
+}
+
+/* skill section */
+
+.skill-input{
+display:flex;
+align-items:center;
+gap:10px;
+
+}
+
+.skill-input input{
+width:75%;
+height:38px;
+padding:8px;
+border-radius:8px;
+border:none;
+background:rgba(255,255,255,0.08);
+color:white;
+}
+
+.skill-input button{
+width:25%;
+height:38px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#6366f1,#8b5cf6);
+color:white;
+font-size:13px;
+cursor:pointer;
+}
+
+.skill-input button:hover{
+transform:scale(1.03);
+}
+
+/* skill tags */
+
+.skill-tags{
+margin-top:10px;
+text-align:left;
+}
+
+.skill-tags span{
+display:inline-block;
+background:#8b5cf6;
+padding:6px 12px;
+border-radius:20px;
+margin:4px;
+font-size:13px;
+color:white;
+cursor:pointer;
+}
+
+/* create profile button */
+
+.submit-btn{
+margin-top:20px;
+width:100%;
+padding:14px;
+
+border:none;
+border-radius:30px;
+
+background:linear-gradient(90deg,#6366f1,#8b5cf6);
+
+color:white;
+font-size:15px;
+
+cursor:pointer;
+
+transition:0.3s;
+}
+
+.submit-btn:hover{
+transform:scale(1.03);
+box-shadow:0 6px 20px rgba(99,102,241,0.5);
+}
+
+label{
+color:#cbd5f5;
+font-size:13px;
+display:block;
+margin-top:10px;
+margin-bottom:4px;
+text-align:left;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+
+<div class="container">
+
+<h1>Complete Your Profile</h1>
+
+<form>
+
+<input type="text" id="usernameInput" placeholder="Username" required>
+
+<input type="password" placeholder="Confirm Password" required>
+
+<label>Skills you can teach</label>
+
+<input type="text" id="teachSkill" placeholder="Type skill and press Enter">
+
+<div class="skill-tags" id="teachList"></div>
+
+
+<label>Skills you want to learn</label>
+
+<input type="text" id="learnSkill" placeholder="Type skill and press Enter">
+
+<div class="skill-tags" id="learnList"></div>
+
+
+
+
+
+<button type="button" id="createProfileBtn" class="submit-btn">Create Profile</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+    // 1. Setup Supabase Connection
+    const supabaseUrl = 'https://fyojiyvwfzwaxefgwncj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ5b2ppeXZ3Znp3YXhlZmd3bmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5NjY4MjgsImV4cCI6MjA5MDU0MjgyOH0.j6zasi2bFDUzvYbmJBGryRna8gAMuN4NBqYZ8WyKGYw';
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 2. Tag Creation Logic
+    function setupTagInput(inputId, listId) {
+        const input = document.getElementById(inputId);
+        const list = document.getElementById(listId);
+        if (!input || !list) return;
+
+        input.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                let skill = input.value.trim();
+                if (skill === "") return;
+
+                let span = document.createElement("span");
+                span.innerHTML = `${skill} <i style="cursor:pointer; margin-left:5px; font-style:normal;">✕</i>`;
+                
+                span.querySelector('i').onclick = () => span.remove();
+
+                list.appendChild(span);
+                input.value = "";
+            }
+        });
+    }
+
+    setupTagInput("teachSkill", "teachList");
+    setupTagInput("learnSkill", "learnList");
+
+    // 3. Save Everything to Database
+    document.getElementById('createProfileBtn').addEventListener('click', async () => {
+        const username = document.getElementById('usernameInput').value;
+        
+        // Grab the text from the tags and remove the '✕' icon
+        const teachSkills = Array.from(document.querySelectorAll('#teachList span')).map(s => s.textContent.replace('✕', '').trim());
+        const learnSkills = Array.from(document.querySelectorAll('#learnList span')).map(s => s.textContent.replace('✕', '').trim());
+
+        const { data: { user } } = await supabaseClient.auth.getUser();
+
+        if (user && username) {
+            try {
+                // A. Save Profile
+                const { error: pError } = await supabaseClient.from('users_profile').upsert({ id: user.id, username: username });
+                if (pError) throw pError;
+
+                // B. Save Teach Skills (Updated to users_skills)
+                for (let skill of teachSkills) {
+                    const { error: sError } = await supabaseClient.from('users_skills').insert({
+                        user_id: user.id,
+                        skill_name: skill,
+                        skill_type: "teach"
+                    });
+                    if (sError) console.error("Error saving teach skill:", sError.message);
+                }
+
+                // C. Save Learn Skills (Updated to users_skills)
+                for (let skill of learnSkills) {
+                    const { error: sError } = await supabaseClient.from('users_skills').insert({
+                        user_id: user.id,
+                        skill_name: skill,
+                        skill_type: "learn"
+                    });
+                    if (sError) console.error("Error saving learn skill:", sError.message);
+                }
+
+                alert("Profile and skills saved successfully!");
+                window.location.href = "dashboard.html";
+
+            } catch (err) {
+                console.error("Critical Error:", err.message);
+                alert("Error: " + err.message);
+            }
+        } else {
+            alert("Please enter a username and ensure you are logged in.");
+        }
+    });
+</script>
+
+</body>
+
+</html>
