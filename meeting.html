@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Virtivo Meeting</title>
-  <script src="https://meet.jit.si/external_api.js"></script>
+  <script src="jitsi-config.js"></script>
 </head>
 
 <body style="margin:0; background:#0f172a; color:white; font-family:'Segoe UI', sans-serif;">
@@ -15,6 +15,50 @@
   <div id="meeting" style="height:calc(100vh - 65px);"></div>
 
   <script>
+    let jitsiApiLoader = null;
+
+    function getJitsiRuntimeConfig() {
+      const config = window.VIRTIVO_JAAS_CONFIG || {};
+      const appId = (config.appId || "").trim();
+
+      if (!appId) {
+        throw new Error("Add your JaaS App ID in jitsi-config.js before opening a meeting.");
+      }
+
+      return {
+        domain: "8x8.vc",
+        scriptSrc: `https://8x8.vc/${appId}/external_api.js`,
+        roomPrefix: `${appId}/`,
+        jwt: (config.jwt || "").trim() || undefined
+      };
+    }
+
+    function ensureJitsiApiLoaded() {
+      if (window.JitsiMeetExternalAPI) {
+        return Promise.resolve();
+      }
+
+      if (jitsiApiLoader) {
+        return jitsiApiLoader;
+      }
+
+      const runtimeConfig = getJitsiRuntimeConfig();
+
+      jitsiApiLoader = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = runtimeConfig.scriptSrc;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error("Failed to load the Jitsi API script."));
+        document.head.appendChild(script);
+      }).catch(error => {
+        jitsiApiLoader = null;
+        throw error;
+      });
+
+      return jitsiApiLoader;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const room = urlParams.get("room");
 
@@ -22,15 +66,36 @@
       document.getElementById("meeting").innerHTML =
         '<div style="padding:24px;">No study room was provided.</div>';
     } else {
-      const domain = "meet.jit.si";
-      const options = {
-        roomName: room,
-        width: "100%",
-        height: "100%",
-        parentNode: document.querySelector("#meeting")
-      };
+      (async () => {
+        try {
+          const runtimeConfig = getJitsiRuntimeConfig();
+          await ensureJitsiApiLoaded();
 
-      new JitsiMeetExternalAPI(domain, options);
+          new JitsiMeetExternalAPI(runtimeConfig.domain, {
+            roomName: `${runtimeConfig.roomPrefix}${room}`,
+            width: "100%",
+            height: "100%",
+            parentNode: document.querySelector("#meeting"),
+            jwt: runtimeConfig.jwt,
+            configOverwrite: {
+              hideConferenceTimer: true,
+              toolbarButtons: [
+                "microphone",
+                "camera",
+                "desktop",
+                "chat",
+                "participants-pane",
+                "tileview",
+                "fullscreen",
+                "hangup"
+              ]
+            }
+          });
+        } catch (error) {
+          document.getElementById("meeting").innerHTML =
+            `<div style="padding:24px; color:#fca5a5;">${error.message}</div>`;
+        }
+      })();
     }
   </script>
 </body>
