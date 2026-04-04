@@ -5,7 +5,7 @@ Project Description
 Virtivo is a platform where users can connect and exchange skills. It allows users to learn from others and also teach their own skills.
 
  Features
->	User Authentication (Signup/Login)
+1.	User Authentication (Signup/Login)
 2. Skill sharing and exchange system
 3.	User profile management
 4. Study Rooms(User can create or join rooms for real-time collaboration)
@@ -24,7 +24,7 @@ Setup Instructions
 1.	Download or clone the repository
 2.	Open the project folder
 3.	Supabase URL and API Key are already configured for demonstration purposes.
-4.	Open landing.html in browser
+4.	Open index.html in browser or the the link given below.
 
 Project Details
 
@@ -37,7 +37,7 @@ The system is built using modern web technologies with a simple and user-friendl
 This project demonstrates the implementation of real-world concepts such as user authentication, database integration, and interactive UI design. It promotes the idea of collaborative learning and aims to build a community where knowledge sharing becomes easy and effective.
 
 Overall, Virtivo provides a scalable and practical solution for peer-to-peer learning and skill development.
-Virtivo Website Link:https://virtivo.vercel.app/
+Explore our platform:https://virtivo.vercel.app/
  
  Contact
 
