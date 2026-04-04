@@ -37,6 +37,7 @@ The system is built using modern web technologies with a simple and user-friendl
 This project demonstrates the implementation of real-world concepts such as user authentication, database integration, and interactive UI design. It promotes the idea of collaborative learning and aims to build a community where knowledge sharing becomes easy and effective.
 
 Overall, Virtivo provides a scalable and practical solution for peer-to-peer learning and skill development.
+
 Explore our platform:https://virtivo.vercel.app/
  
  Contact
