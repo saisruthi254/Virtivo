@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Virtivo</title>
-    <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="jitsi-config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -780,6 +780,57 @@ async function saveSkillsToSupabase() {
 let chatUserId = null;
 let chatUserName = "";
 let studyRoomApi = null;
+let jitsiApiLoader = null;
+function getJitsiRuntimeConfig() {
+    const config = window.VIRTIVO_JAAS_CONFIG || {};
+    const appId = (config.appId || "").trim();
+
+    if (!appId) {
+        throw new Error("Add your JaaS App ID in jitsi-config.js before starting a Study Room.");
+    }
+
+    return {
+        domain: "8x8.vc",
+        scriptSrc: `https://8x8.vc/${appId}/external_api.js`,
+        roomPrefix: `${appId}/`,
+        jwt: (config.jwt || "").trim() || undefined
+    };
+}
+
+function ensureJitsiApiLoaded() {
+    if (window.JitsiMeetExternalAPI) {
+        return Promise.resolve();
+    }
+
+    if (jitsiApiLoader) {
+        return jitsiApiLoader;
+    }
+
+    const runtimeConfig = getJitsiRuntimeConfig();
+
+    jitsiApiLoader = new Promise((resolve, reject) => {
+        const existingScript = document.querySelector(`script[data-jitsi-src="${runtimeConfig.scriptSrc}"]`);
+
+        if (existingScript) {
+            existingScript.addEventListener("load", resolve, { once: true });
+            existingScript.addEventListener("error", () => reject(new Error("Failed to load the Jitsi API script.")), { once: true });
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = runtimeConfig.scriptSrc;
+        script.async = true;
+        script.dataset.jitsiSrc = runtimeConfig.scriptSrc;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error("Failed to load the Jitsi API script."));
+        document.head.appendChild(script);
+    }).catch(error => {
+        jitsiApiLoader = null;
+        throw error;
+    });
+
+    return jitsiApiLoader;
+}
 
 function openChat(userId, username) {
     console.log("Opening chat:", userId, username);
@@ -882,7 +933,7 @@ function blockUser(userId, username) {
     console.log("Blocked:", userId);
 }
 
-function startStudyRoom() {
+async function startStudyRoom() {
     if (!currentUserId) {
         alert("Please log in again.");
         return;
@@ -894,12 +945,17 @@ function startStudyRoom() {
     }
 
     const participants = [currentUserId, chatUserId].sort().join("-");
-    const room = `virtivo-study-${participants}`;
+    const baseRoomName = `virtivo-study-${participants}`;
     const meetingContainer = document.getElementById("studyRoomContainer");
     const meetingModal = document.getElementById("studyRoomModal");
+    let runtimeConfig;
 
-    if (!window.JitsiMeetExternalAPI) {
-        alert("Jitsi failed to load. Please refresh and try again.");
+    try {
+        runtimeConfig = getJitsiRuntimeConfig();
+        await ensureJitsiApiLoaded();
+    } catch (error) {
+        console.error("Jitsi configuration error:", error);
+        alert(error.message);
         return;
     }
 
@@ -912,13 +968,28 @@ function startStudyRoom() {
     document.getElementById("studyRoomUserName").innerText = chatUserName || "your connection";
     meetingModal.style.display = "flex";
 
-    studyRoomApi = new JitsiMeetExternalAPI("meet.jit.si", {
-        roomName: room,
+    studyRoomApi = new JitsiMeetExternalAPI(runtimeConfig.domain, {
+        roomName: `${runtimeConfig.roomPrefix}${baseRoomName}`,
         parentNode: meetingContainer,
         width: "100%",
-        height: "100%"
+        height: "100%",
+        jwt: runtimeConfig.jwt,
+        configOverwrite: {
+            hideConferenceTimer: true,
+            toolbarButtons: [
+                "microphone",
+                "camera",
+                "desktop",
+                "chat",
+                "participants-pane",
+                "tileview",
+                "fullscreen",
+                "hangup"
+            ]
+        }
     });
 }
+    
     </script>
 
     <div id="requestModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
