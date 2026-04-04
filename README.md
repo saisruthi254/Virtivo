@@ -28,15 +28,15 @@ Setup Instructions
 
 Project Details
 
-Virtivo is a peer-to-peer skill exchange platform designed to make learning more accessible, collaborative, and affordable. In today’s world, many individuals possess valuable skills but lack opportunities to share or learn from others without financial barriers. Virtivo addresses this problem by creating a community-driven environment where users can both teach and learn.
+> Virtivo is a peer-to-peer skill exchange platform designed to make learning more accessible, collaborative, and affordable. In today’s world, many individuals possess valuable skills but lack opportunities to share or learn from others without financial barriers. Virtivo addresses this problem by creating a community-driven environment where users can both teach and learn.
 
-The platform allows users to create profiles, list their skills, and connect with others who are interested in learning or exchanging knowledge. One of the key features of the platform is the study room functionality, where users can create or join virtual rooms to collaborate, discuss, and learn together in real time.
+> The platform allows users to create profiles, list their skills, and connect with others who are interested in learning or exchanging knowledge. One of the key features of the platform is the study room functionality, where users can create or join virtual rooms to collaborate, discuss, and learn together in real time.
 
-The system is built using modern web technologies with a simple and user-friendly interface. The frontend is developed using HTML, CSS, and JavaScript, while backend services such as authentication and database management are handled using Supabase and PostgreSQL.
+> The system is built using modern web technologies with a simple and user-friendly interface. The frontend is developed using HTML, CSS, and JavaScript, while backend services such as authentication and database management are handled using Supabase and PostgreSQL.
 
-This project demonstrates the implementation of real-world concepts such as user authentication, database integration, and interactive UI design. It promotes the idea of collaborative learning and aims to build a community where knowledge sharing becomes easy and effective.
+> This project demonstrates the implementation of real-world concepts such as user authentication, database integration, and interactive UI design. It promotes the idea of collaborative learning and aims to build a community where knowledge sharing becomes easy and effective.
 
-Overall, Virtivo provides a scalable and practical solution for peer-to-peer learning and skill development.
+> Overall, Virtivo provides a scalable and practical solution for peer-to-peer learning and skill development.
 
 Explore our platform:https://virtivo.vercel.app/
  
