@@ -48,5 +48,4 @@ Explore our platform:https://virtivo.vercel.app/
 2. Name: R.Sai Sruthi
    Email: saisruthi875@gmail.com
 
-3. Name: K.Ram Charan
-   Email: koratlaramcharan@gmail.com
+
